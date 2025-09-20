@@ -56,10 +56,10 @@ CREATE TABLE bronze.crm_sales_details(
 
 --- ERP
 
-IF OBJECT_ID('bronze.erp_cust_az101', 'U') IS NOT NULL
-DROP TABLE bronze.erp_cust_az101;
+IF OBJECT_ID('bronze.erp_cust_az12', 'U') IS NOT NULL
+DROP TABLE bronze.erp_cust_az12;
 
-CREATE TABLE bronze.erp_cust_az101(
+CREATE TABLE bronze.erp_cust_az12(
 	cid NVARCHAR(50),
 	bdate DATE,
 	gen NVARCHAR(50)
