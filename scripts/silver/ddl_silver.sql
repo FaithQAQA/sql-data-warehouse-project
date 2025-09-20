@@ -12,8 +12,8 @@
 --                 4. silver.erp_cust_az101
 --                 5. silver.erp_loc_a101
 --                 6. silver.erp_px_cat_g1v2
--- Author        : [Your Name]
--- Created Date  : [YYYY-MM-DD]
+-- Author        : Jalani
+-- Created Date  : 2025-09-19
 -- Notes         : 
 --                 - All existing tables will be dropped if they exist.
 --                 - Data types and default values are defined according to Silver layer 
