@@ -1,4 +1,3 @@
-
 -- ==========================================================
 -- Create a Customer Dimension (gold.dim_customers)
 -- Purpose: Standardize and enrich customer data for analytics
@@ -11,7 +10,7 @@ SELECT
     ci.cst_firstname AS first_name,                         -- Customer first name
     ci.cst_lastname AS last_name,                           -- Customer last name
     la.cntry AS country,                                    -- Country from location data
-    ci.cst_material_status AS marital_status,               -- Marital status
+    ci.cst_marital_status AS marital_status,               -- Marital status
     CASE 
         WHEN ci.cst_gndr != 'n/a' THEN ci.cst_gndr          -- Use CRM gender if available
         ELSE COALESCE(ca.gen, 'n/a')                        -- Otherwise fallback to ERP data
@@ -19,17 +18,17 @@ SELECT
     ca.bdate AS birthdate,                                  -- Birthdate from ERP
     ci.cst_create_date AS create_date                       -- Date customer was created
 FROM silver.crm_cust_info ci
-LEFT JOIN silver.erp_cust_az101 ca
+LEFT JOIN silver.erp_cust_az12 ca
     ON ci.cst_key = ca.cid
 LEFT JOIN silver.erp_loc_a101 la
     ON ci.cst_key = la.cid;
-
+GO
 
 -- ==========================================================
 -- Create a Product Dimension (gold.dim_products)
 -- Purpose: Store descriptive product and category attributes
 -- ==========================================================
-CREATE VIEW gold.dim_prodcuts AS
+CREATE VIEW gold.dim_products AS
 SELECT
     ROW_NUMBER() OVER(ORDER BY pn.prd_start_dt, pn.prd_key) AS product_key, -- Surrogate product key
     pn.prd_id AS product_id,                                               -- Natural product ID
@@ -45,8 +44,8 @@ SELECT
 FROM silver.crm_prd_info pn
 LEFT JOIN silver.erp_px_cat_g1v2 pc
     ON pn.cat_id = pc.id
-WHERE prd_end_dt IS NULL;                                                  -- Only include active products
-
+WHERE pn.prd_end_dt IS NULL;                                              -- Only include active products
+GO
 
 -- ==========================================================
 -- Create a Sales Fact (gold.fact_sales)
@@ -64,7 +63,8 @@ SELECT
     sd.sls_quantity AS quantity,              -- Quantity sold
     sd.sls_price AS unit_price                -- Unit price
 FROM silver.crm_sales_details sd
-LEFT JOIN gold.dim_prodcuts pr
+LEFT JOIN gold.dim_products pr
     ON sd.sls_prd_key = pr.product_number
 LEFT JOIN gold.dim_customers cu
     ON sd.sls_cust_id = cu.customer_id;
+GO
